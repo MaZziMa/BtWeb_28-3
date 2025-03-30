@@ -1,0 +1,29 @@
+﻿<h2>Giỏ hàng của bạn</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sản phẩm</th>
+            <th>Giá</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Price.ToString("N0") đ</td>
+                <td>@item.Quantity</td>
+                <td>@(item.Price * item.Quantity) đ</td>
+                <td>
+                    <a asp-action="Remove" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<h4 class="text-end">Tổng tiền: <strong>@ViewBag.Total đ</strong></h4>
+<a asp-action="Clear" class="btn btn-warning">Xóa tất cả</a>
+<a asp-controller="Cart" asp-action="Checkout" class="btn btn-success">Đặt hàng</a>

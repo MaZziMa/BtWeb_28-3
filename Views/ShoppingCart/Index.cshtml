@@ -1,0 +1,62 @@
+﻿@model ShoppingCart
+
+<h2>Your Shopping Cart</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>
+                    <form class="update-quantity-form" data-product-id="@item.Id">
+                        <input type="number" name="quantity" value="@item.Quantity" class="form-control" style="width: 60px;" />
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </td>
+                <td>@(item.Price * item.Quantity)</td>
+                <td>
+                    <a asp-action="RemoveFromCart" asp-route-productId="@item.Id" class="btn btn-danger">Remove</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="ClearCart" class="btn btn-warning">Clear Cart</a>
+<a asp-action="Checkout" class="btn btn-success">Checkout</a>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.update-quantity-form').on('submit', function (e) {
+                e.preventDefault();
+                var form = $(this);
+                var productId = form.data('product-id');
+                var quantity = form.find('input[name="quantity"]').val();
+
+                $.ajax({
+                    url: '@Url.Action("UpdateQuantity", "ShoppingCart")',
+                    type: 'POST',
+                    data: { productId: productId, quantity: quantity },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}
